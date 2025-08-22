@@ -1,0 +1,45 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 100m
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "prometheus-data:/prometheus"
+    networks:
+        - localprom
+    ports:
+      - 9090:9090
+  node-exporter:
+    image: prom/node-exporter
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 100m
+    networks:
+        - localprom
+    ports:
+      - 9100:9100
+  grafana:
+    image: grafana/grafana
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 200m
+    volumes:
+      - "grafana-data:/var/lib/grafana"
+    networks:
+        - localprom
+    ports:
+      - 3000:3000
+networks:
+  localprom:
+    driver: bridge
+volumes:
+  prometheus-data: {}
+  grafana-data: {}

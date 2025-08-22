@@ -1,0 +1,17 @@
+services:
+  vector:
+    image: "timberio/vector:latest-alpine"
+    volumes:
+      - "./vector.yaml:/etc/vector/vector.yaml:ro"
+    deploy:
+      resources:
+        limits:
+          memory: 100m
+          cpus: 0.5
+    networks:
+      - local-vector
+    ports:
+      - 8686:8686
+networks:
+  local-vector:
+    driver: bridge
