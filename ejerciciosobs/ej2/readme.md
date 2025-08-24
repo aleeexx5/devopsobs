@@ -1,4 +1,4 @@
-#Bases del ejercicio:
+Bases del ejercicio:
 
 1. Crear los ficheros necesarios para desplegar Grafana utilizando un Dockerfile basado en la documentación oficial. 
 2. Acceder a la interfaz web de Grafana y configurar Prometheus como un datasource. 

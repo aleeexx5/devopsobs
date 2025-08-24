@@ -1,5 +1,5 @@
-#Bases del ejercicio:
-##Para completar este ejercicio, debes: 
+Bases del ejercicio:
+Para completar este ejercicio, debes: 
 1. Desplegar Vector: 
     Crear los ficheros necesarios para desplegar Vector utilizando un Dockerfile basado en la documentación oficial. 
     Definir un fichero de configuración (vector.yaml) que permita a Vector leer logs de un archivo local sencillo. 
