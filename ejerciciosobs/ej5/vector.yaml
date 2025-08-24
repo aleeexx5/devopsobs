@@ -1,0 +1,17 @@
+api:
+  enabled: true 
+  address: 0.0.0.0:8686 #expone las metricas de vector
+sources:
+  demo_logs:
+    type: demo_logs   # logs de prueba
+    interval: 1
+    format: json
+sinks:
+  es_cluster:
+    inputs:
+      - "demo_logs"       # only take sampled data
+    type: "elasticsearch"
+    endpoints:
+      - "http://elasticsearch:9200"
+    bulk:
+      index: "vector-%Y-%m-%d" # daily indices

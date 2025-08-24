@@ -1,0 +1,50 @@
+services:
+  vector:
+    image: "timberio/vector:latest-alpine"
+    volumes:
+      - "./vector.yaml:/etc/vector/vector.yaml:ro"
+    deploy:
+      resources:
+        limits:
+          memory: 100m
+          cpus: 0.5
+    networks:
+      - localelk
+    ports:
+      - 8686:8686
+  elasticsearch:
+    image: elastic/elasticsearch:8.19.2
+    networks:
+      - localelk
+    volumes:
+      - elasticsearchdata:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD="1234"
+    deploy:
+      resources:
+        limits:
+          memory: 2000m
+          cpus: 1.5
+    ports:
+      - 9200:9200
+  kibana:
+    image: elastic/kibana:8.19.2
+    networks:
+      - localelk
+    volumes:
+      - kibanadata:/usr/share/kibana/data
+    deploy:
+      resources:
+        limits:
+          memory: 1000m
+          cpus: 2
+    ports:
+      - 5601:5601
+networks:
+  localelk:
+    driver: bridge
+volumes:
+  elasticsearchdata: {}
+  kibanadata: {}
