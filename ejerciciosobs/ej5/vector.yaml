@@ -6,12 +6,21 @@ sources:
     type: demo_logs   # logs de prueba
     interval: 1
     format: json
+transforms:
+  modify:
+    type: remap
+    inputs: 
+      - demo_logs
+    source: |
+      . = parse_json!(string!(.message))
+      .test = "hello"
+      .timestamp, err = parse_timestamp(.datetime, format: "%d/%b/%Y:%H:%M:%S")
 sinks:
   es_cluster:
     inputs:
-      - "demo_logs"       # cogemos los logs de sources
+      - "modify"       # cogemos los logs de sources
     type: "elasticsearch"
     endpoints:
       - "http://elasticsearch:9200"
     bulk:
-      index: "vector-%Y-%m-%d" # índices diarios
+      index: "vector-logs"
