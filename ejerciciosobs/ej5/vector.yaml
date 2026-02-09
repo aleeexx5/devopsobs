@@ -1,13 +1,23 @@
 api:
-  enabled: true 
-  address: 0.0.0.0:8686 #expone las metricas de vector
+  enabled: false #expone las metricas de vector
 sources:
   demo_logs:
     type: demo_logs   # logs de prueba
     interval: 1
     format: json
+
+  internal_metrics:
+    type: internal_metrics
+    scrape_interval_secs: 5
+  
+  vm_metrics:
+    type: prometheus_scrape
+    endpoints:
+      - "http://victoriametrics:8428/metrics"
+    scrape_interval_secs: 15
+
 transforms:
-  modify:
+  elastic_logs_remap:
     type: remap
     inputs: 
       - demo_logs
@@ -15,12 +25,24 @@ transforms:
       . = parse_json!(string!(.message))
       .test = "hello"
       .timestamp, err = parse_timestamp(.datetime, format: "%d/%b/%Y:%H:%M:%S")
+
 sinks:
   es_cluster:
     inputs:
-      - "modify"       # cogemos los logs de sources
+      - "elastic_logs_remap"       # cogemos los logs de sources
     type: "elasticsearch"
     endpoints:
       - "http://elasticsearch:9200"
     bulk:
       index: "vector-logs"
+    healthcheck:
+      enabled: false
+
+  victoriametrics:
+    type: prometheus_remote_write
+    inputs:
+      - internal_metrics
+      - vm_metrics
+    endpoint: "http://victoriametrics:8428/api/v1/write"
+    healthcheck:
+      enabled: false

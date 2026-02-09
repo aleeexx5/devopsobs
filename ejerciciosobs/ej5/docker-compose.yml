@@ -3,6 +3,9 @@ services:
     image: "timberio/vector:latest-alpine"
     volumes:
       - "./vector.yaml:/etc/vector/vector.yaml:ro"
+    depends_on:
+      - elasticsearch
+      - victoriametrics
     deploy:
       resources:
         limits:
@@ -12,6 +15,7 @@ services:
       - localelk
     ports:
       - 8686:8686
+
   elasticsearch:
     image: elastic/elasticsearch:8.19.2
     networks:
@@ -29,6 +33,7 @@ services:
           cpus: 1.5
     ports:
       - 9200:9200
+
   kibana:
     image: elastic/kibana:8.19.2
     networks:
@@ -42,9 +47,39 @@ services:
           cpus: 2
     ports:
       - 5601:5601
+
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:latest
+    networks:
+      - localelk
+    volumes:
+      - victoriametricsdata:/storage
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+          cpus: 1
+    ports:
+      - 8428:8428
+  
+  grafana:
+    image: grafana/grafana
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 200m
+    volumes:
+      - grafanadata:/var/lib/grafana
+    networks:
+        - localelk
+    ports:
+      - 3000:3000
 networks:
   localelk:
     driver: bridge
 volumes:
   elasticsearchdata: {}
   kibanadata: {}
+  victoriametricsdata: {}
+  grafanadata: {}
