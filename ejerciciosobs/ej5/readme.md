@@ -1,13 +1,3 @@
-Para completar este ejercicio, debes: 
+As general idea, there will be an application, for instance a web application. Metrics and logs will be exposed to Vector, who will transform them and send them to Elasticsearch / Victoria Metrics. Then with Grafana, we will read the metrics (and presumably the logs, if we finally integrate them with VM) from VM and we will be able to create dashboards and so on.
 
-1. Modificar la configuración de Vector: 
-    Actualizar el fichero vector.yaml para cambiar el sink de stdout a elasticsearch. 
-    Configurar los detalles de conexión a Elasticsearch, incluyendo host y puerto. 
-    Definir un nombre básico para el índice donde se almacenarán los logs. 
-    
-2. Comprobar cambios en Vector: 
-    Aplicar los cambios de Vector para activar la nueva configuración. 
-
-3. Verificación en Kibana: 
-    Acceder a Kibana > Discover y verificar que los logs enviados por Vector están siendo recibidos correctamente en Elasticsearch. 
-    Crear un Index Pattern en Kibana que permita visualizar los logs enviados por Vector. 
+As of now, only metrics are exposed, from vector itself. Logs are dummy logs that go into Elastic, being parsed previously by Vector
